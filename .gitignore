@@ -1,0 +1,13 @@
+# Ignorar node_modules de backend y frontend
+/backend/node_modules/
+/frontend/node_modules/
+
+# Logs
+*.log
+
+# Archivos temporales de sistema
+.DS_Store
+Thumbs.db
+
+# Entornos
+.env
