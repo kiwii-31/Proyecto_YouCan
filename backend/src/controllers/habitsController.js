@@ -22,9 +22,11 @@ const getAllHabits = async (req, res) => {
 // Crear habito
 const createHabit = async (req, res) => {
   try {
-    const { nombre, descripcion, usuario_id, categoria_id } = req.body;
-    if (!nombre || !usuario_id) return res.status(400).json({ error: "Falta nombre o usuario_id" });
-    await insertHabit(nombre, descripcion, usuario_id, categoria_id);
+    const { nombre, descripcion, usuario_id } = req.body;
+    if (!nombre || !usuario_id) 
+      return res.status(400).json({ error: "Falta nombre o usuario_id" });
+
+    await insertHabit(nombre, descripcion, usuario_id); // ya no pasamos categoria_id
     res.json({ mensaje: "Habito creado" });
   } catch (err) {
     console.log(err);
@@ -36,14 +38,15 @@ const createHabit = async (req, res) => {
 const updateHabitController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion, categoria_id } = req.body;
-    await updateHabit(id, nombre, descripcion, categoria_id);
+    const { nombre, descripcion } = req.body; // eliminamos categoria_id
+    await updateHabit(id, nombre, descripcion); // sin categoria_id
     res.json({ mensaje: "Hábito actualizado" });
   } catch (err) {
     console.log(err);
     res.status(500).json({ error: "Error al actualizar habito" });
   }
 };
+
 
 // Eliminar habito
 const deleteHabitController = async (req, res) => {
