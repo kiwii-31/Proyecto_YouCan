@@ -5,7 +5,7 @@ En este repositorio se encontrará nuestro trabajo final
 Tal como el nombre lo de dice YouCan "Tu puedes", un aplicativo para que puedas organizarte
 
 ### Nuevo GitHub 
-profe cree este GitHub recien por que el anterior que teniamos no me dejaba hostear la app
+creamos este GitHub nuevo por que con el anterior teniamos problemas al hostear la app
 
 #### Funcionalidades Principales
 - Registro e inicio de sesión (login).
