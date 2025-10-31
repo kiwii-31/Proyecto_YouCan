@@ -10,6 +10,7 @@ export default function Habits({ usuarioId }) {
   useEffect(() => {
     async function fetchHabits() {
       const data = await getHabits(usuarioId);
+      console.log("Habits data:", data);
       setHabits(data);
     }
     fetchHabits();
@@ -67,11 +68,11 @@ export default function Habits({ usuarioId }) {
       </form>
 
       <div className="space-y-6 max-h-[70vh] overflow-y-auto">
-        {habits.map(h => (
+        {Array.isArray(habits) && habits.map(h => (
           <div key={h.id} className="bg-gray-50 p-4 rounded-lg shadow">
             <h2 className="font-semibold text-xl">{h.nombre}</h2>
             <p className="text-gray-500">{h.descripcion}</p>
-            <p>Días: {h.dias.join(", ")}</p>
+            <p>Dias: {h.dias?.join(", ") || "No asignados"}</p>
             <div className="flex gap-2 mt-2">
               <button onClick={()=>{setEditId(h.id); setNewHabit(h)}} className="btn btn-sm btn-warning">Editar</button>
               <button onClick={()=>handleDelete(h.id)} className="btn btn-sm btn-error">Eliminar</button>

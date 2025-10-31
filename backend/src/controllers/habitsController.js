@@ -11,10 +11,11 @@ const getAllHabits = async (req, res) => {
   try {
     const usuario_id = req.query.usuario_id;
     if (!usuario_id) return res.status(400).json({ error: "Falta usuario_id" });
+
     const habits = await getHabits(usuario_id);
     res.json(habits);
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Error al obtener habitos" });
   }
 };
@@ -23,13 +24,13 @@ const getAllHabits = async (req, res) => {
 const createHabit = async (req, res) => {
   try {
     const { nombre, descripcion, usuario_id } = req.body;
-    if (!nombre || !usuario_id) 
+    if (!nombre || !usuario_id)
       return res.status(400).json({ error: "Falta nombre o usuario_id" });
 
-    await insertHabit(nombre, descripcion, usuario_id); // ya no pasamos categoria_id
+    await insertHabit(nombre, descripcion, usuario_id);
     res.json({ mensaje: "Habito creado" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Error al crear habito" });
   }
 };
@@ -38,11 +39,11 @@ const createHabit = async (req, res) => {
 const updateHabitController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion } = req.body; // eliminamos categoria_id
-    await updateHabit(id, nombre, descripcion); // sin categoria_id
-    res.json({ mensaje: "Hábito actualizado" });
+    const { nombre, descripcion } = req.body;
+    await updateHabit(id, nombre, descripcion);
+    res.json({ mensaje: "Habito actualizado" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Error al actualizar habito" });
   }
 };
@@ -55,7 +56,7 @@ const deleteHabitController = async (req, res) => {
     await deleteHabit(id);
     res.json({ mensaje: "Habito eliminado" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Error al eliminar habito" });
   }
 };
@@ -68,7 +69,7 @@ const toggleHabitDoneController = async (req, res) => {
     await toggleHabitDone(habito_id, dia_id, completado);
     res.json({ mensaje: "Habito actualizado completado" });
   } catch (err) {
-    console.log(err);
+    console.error(err);
     res.status(500).json({ error: "Error al actualizar completado" });
   }
 };

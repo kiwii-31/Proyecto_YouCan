@@ -1,11 +1,43 @@
 const { pool } = require("../db/connection");
 
 async function getHabits(usuario_id) {
-  const res = await pool.query(
-    "SELECT * FROM habitos WHERE usuario_id = $1",
-    [usuario_id]
-  );
-  return res.rows;
+  const res = await pool.query(`
+    SELECT 
+      h.id AS habito_id,
+      h.nombre AS habito_nombre,
+      h.descripcion,
+      d.id AS dia_id,
+      d.nombre AS dia_nombre,
+      hd.completado
+    FROM habitos h
+    JOIN habitodias hd ON h.id = hd.habito_id
+    JOIN dias d ON d.id = hd.dia_id
+    WHERE h.usuario_id = $1
+    ORDER BY h.id, d.id;
+  `, [usuario_id]);
+
+  const habitsMap = {};
+
+  res.rows.forEach(row => {
+    if (!habitsMap[row.habito_id]) {
+      habitsMap[row.habito_id] = {
+        id: row.habito_id,
+        nombre: row.habito_nombre,
+        descripcion: row.descripcion,
+        dias: [],
+        dias_detalle: []
+      };
+    }
+
+    habitsMap[row.habito_id].dias.push(row.dia_nombre);
+    habitsMap[row.habito_id].dias_detalle.push({
+      id: row.dia_id,
+      nombre: row.dia_nombre,
+      completado: row.completado
+    });
+  });
+
+  return Object.values(habitsMap);
 }
 
 async function insertHabit(nombre, descripcion, usuario_id) {

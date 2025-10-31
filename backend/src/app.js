@@ -11,7 +11,8 @@ const usersRoutes = require("./routes/usersRoutes");
 const app = express();
 
 // MIDDLEWARES
-app.use(cors());
+app.use(cors({
+  origin: "https://proyecto-youcan-gbgq.onrender.com" }));
 app.use(express.json());
 
 // USO DE RUTAS
@@ -23,7 +24,7 @@ app.get("/", (req, res) => {
   res.send("✅ Backend funcionando");
 });
 
-db();
+db().catch(err => console.error("❌ Error al inicializar DB:", err));
 // SERVIDOR
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
