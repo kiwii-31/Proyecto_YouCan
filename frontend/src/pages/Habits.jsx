@@ -6,22 +6,19 @@ export default function Habits() {
   const [newHabit, setNewHabit] = useState({ nombre: "", descripcion: "", dias: [] });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
-  const days = ["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];
-  const user = JSON.parse(localStorage.getItem("usuario"));
-  const usuarioId = user?.id;
+  const days = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
 
   useEffect(() => {
     async function fetchHabits() {
       try {
-        if (!usuarioId) {
-          setError("No se encontro usuario logueado");
-          return;
-        }
-        const data = await getHabits(usuarioId);
+        const data = await getHabits();
         if (Array.isArray(data)) {
           const formatted = data.map(h => ({
             ...h,
-            dias: Array.isArray(h.dias) ? h.dias : (h.dias?.split(",") || [])
+            dias: Array.isArray(h.Dia) ? h.Dia : (h.Dia?.split(",") || []),
+            nombre: h.Nombre,
+            descripcion: h.Descripcion,
+            id: h.ID_Habito
           }));
           setHabits(formatted);
         } else {
@@ -33,7 +30,7 @@ export default function Habits() {
       }
     }
     fetchHabits();
-  }, [usuarioId]);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -44,15 +41,28 @@ export default function Habits() {
 
     try {
       if (editId) {
-        await apiUpdateHabit(editId, { ...newHabit, usuario_id: usuarioId, dias: newHabit.dias.join(",") });
+        await apiUpdateHabit(editId, {
+          Nombre: newHabit.nombre,
+          Descripcion: newHabit.descripcion,
+          Dia: newHabit.dias.join(","),
+          Done: false
+        });
       } else {
-        await apiCreateHabit({ ...newHabit, usuario_id: usuarioId, dias: newHabit.dias.join(",") });
+        await apiCreateHabit({
+          Nombre: newHabit.nombre,
+          Descripcion: newHabit.descripcion,
+          Dia: newHabit.dias.join(","),
+          Done: false
+        });
       }
 
-      const data = await getHabits(usuarioId);
+      const data = await getHabits();
       const formatted = data.map(h => ({
         ...h,
-        dias: Array.isArray(h.dias) ? h.dias : (h.dias?.split(",") || [])
+        dias: Array.isArray(h.Dia) ? h.Dia : (h.Dia?.split(",") || []),
+        nombre: h.Nombre,
+        descripcion: h.Descripcion,
+        id: h.ID_Habito
       }));
       setHabits(formatted);
       setEditId(null);
@@ -68,10 +78,13 @@ export default function Habits() {
     if (window.confirm("Seguro que quieres eliminarlo?")) {
       try {
         await apiDeleteHabit(id);
-        const data = await getHabits(usuarioId);
+        const data = await getHabits();
         const formatted = data.map(h => ({
           ...h,
-          dias: Array.isArray(h.dias) ? h.dias : (h.dias?.split(",") || [])
+          dias: Array.isArray(h.Dia) ? h.Dia : (h.Dia?.split(",") || []),
+          nombre: h.Nombre,
+          descripcion: h.Descripcion,
+          id: h.ID_Habito
         }));
         setHabits(formatted);
       } catch (err) {
@@ -80,9 +93,10 @@ export default function Habits() {
       }
     }
   };
+
   const handleEdit = (h) => {
     setEditId(h.id);
-    setNewHabit({ ...h, dias: Array.isArray(h.dias) ? h.dias : (h.dias?.split(",") || []) });
+    setNewHabit({ nombre: h.nombre, descripcion: h.descripcion, dias: h.dias });
     setError("");
   };
 

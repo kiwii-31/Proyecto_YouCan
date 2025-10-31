@@ -1,18 +1,9 @@
-const {
-  getHabits,
-  insertHabit,
-  updateHabit,
-  deleteHabit,
-  toggleHabitDone
-} = require("../services/habitsService");
+// src/controllers/habitsController.js
+const { getHabits, insertHabit, updateHabit, deleteHabit } = require('../services/habitsService');
 
-// Obtener todos los habitos de un usuario
 const getAllHabits = async (req, res) => {
   try {
-    const usuario_id = req.query.usuario_id;
-    if (!usuario_id) return res.status(400).json({ error: "Falta usuario_id" });
-
-    const habits = await getHabits(usuario_id);
+    const habits = await getHabits();
     res.json(habits);
   } catch (err) {
     console.error(err);
@@ -20,14 +11,14 @@ const getAllHabits = async (req, res) => {
   }
 };
 
-// Crear habito
 const createHabit = async (req, res) => {
   try {
-    const { nombre, descripcion, usuario_id } = req.body;
-    if (!nombre || !usuario_id)
-      return res.status(400).json({ error: "Falta nombre o usuario_id" });
+    const { Nombre, Descripcion, Dia, Done } = req.body;
+    if (!Nombre || !Dia) {
+      return res.status(400).json({ error: "Faltan datos obligatorios" });
+    }
 
-    await insertHabit(nombre, descripcion, usuario_id);
+    await insertHabit(Nombre, Descripcion || "", Dia, Done || false);
     res.json({ mensaje: "Habito creado" });
   } catch (err) {
     console.error(err);
@@ -35,12 +26,16 @@ const createHabit = async (req, res) => {
   }
 };
 
-// Actualizar habito
 const updateHabitController = async (req, res) => {
   try {
     const { id } = req.params;
-    const { nombre, descripcion } = req.body;
-    await updateHabit(id, nombre, descripcion);
+    const { Nombre, Descripcion, Dia, Done } = req.body;
+
+    if (!Nombre || !Dia) {
+      return res.status(400).json({ error: "Faltan datos obligatorios" });
+    }
+
+    await updateHabit(id, Nombre, Descripcion || "", Dia, Done || false);
     res.json({ mensaje: "Habito actualizado" });
   } catch (err) {
     console.error(err);
@@ -48,8 +43,6 @@ const updateHabitController = async (req, res) => {
   }
 };
 
-
-// Eliminar habito
 const deleteHabitController = async (req, res) => {
   try {
     const { id } = req.params;
@@ -61,23 +54,4 @@ const deleteHabitController = async (req, res) => {
   }
 };
 
-
-const toggleHabitDoneController = async (req, res) => {
-  try {
-    const { habito_id, dia_id } = req.params;
-    const { completado } = req.body;
-    await toggleHabitDone(habito_id, dia_id, completado);
-    res.json({ mensaje: "Habito actualizado completado" });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Error al actualizar completado" });
-  }
-};
-
-module.exports = {
-  getAllHabits,
-  createHabit,
-  updateHabitController,
-  deleteHabitController,
-  toggleHabitDoneController
-};
+module.exports = { getAllHabits, createHabit, updateHabitController, deleteHabitController };

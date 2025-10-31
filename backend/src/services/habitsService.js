@@ -1,74 +1,38 @@
-const { pool } = require("../db/connection");
+// src/services/habitsService.js
+const { conectar, sql } = require('../db/connection');
 
-async function getHabits(usuario_id) {
-  const res = await pool.query(`
-    SELECT 
-      h.id AS habito_id,
-      h.nombre AS habito_nombre,
-      h.descripcion,
-      d.id AS dia_id,
-      d.nombre AS dia_nombre,
-      hd.completado
-    FROM habitos h
-    JOIN habitodias hd ON h.id = hd.habito_id
-    JOIN dias d ON d.id = hd.dia_id
-    WHERE h.usuario_id = $1
-    ORDER BY h.id, d.id;
-  `, [usuario_id]);
-
-  const habitsMap = {};
-
-  res.rows.forEach(row => {
-    if (!habitsMap[row.habito_id]) {
-      habitsMap[row.habito_id] = {
-        id: row.habito_id,
-        nombre: row.habito_nombre,
-        descripcion: row.descripcion,
-        dias: [],
-        dias_detalle: []
-      };
-    }
-
-    habitsMap[row.habito_id].dias.push(row.dia_nombre);
-    habitsMap[row.habito_id].dias_detalle.push({
-      id: row.dia_id,
-      nombre: row.dia_nombre,
-      completado: row.completado
-    });
-  });
-
-  return Object.values(habitsMap);
+async function getHabits() {
+  const pool = await conectar();
+  const result = await pool.request().query("SELECT * FROM Habito");
+  return result.recordset;
 }
 
-async function insertHabit(nombre, descripcion, usuario_id) {
-  await pool.query(
-    "INSERT INTO habitos (nombre, descripcion, usuario_id) VALUES ($1, $2, $3)",
-    [nombre, descripcion, usuario_id]
-  );
+async function insertHabit(nombre, descripcion, dia, done) {
+  const pool = await conectar();
+  await pool.request()
+    .input("Nombre", sql.VarChar, nombre)
+    .input("Descripcion", sql.VarChar, descripcion)
+    .input("Dia", sql.VarChar, dia)
+    .input("Done", sql.Bit, done)
+    .query("INSERT INTO Habito (Nombre, Descripcion, Dia, Done) VALUES (@Nombre, @Descripcion, @Dia, @Done)");
 }
 
-async function updateHabit(id, nombre, descripcion) {
-  await pool.query(
-    "UPDATE habitos SET nombre=$1, descripcion=$2 WHERE id=$3",
-    [nombre, descripcion, id]
-  );
+async function updateHabit(id, nombre, descripcion, dia, done) {
+  const pool = await conectar();
+  await pool.request()
+    .input("ID_Habito", sql.Int, id)
+    .input("Nombre", sql.VarChar, nombre)
+    .input("Descripcion", sql.VarChar, descripcion)
+    .input("Dia", sql.VarChar, dia)
+    .input("Done", sql.Bit, done)
+    .query("UPDATE Habito SET Nombre=@Nombre, Descripcion=@Descripcion, Dia=@Dia, Done=@Done WHERE ID_Habito=@ID_Habito");
 }
 
 async function deleteHabit(id) {
-  await pool.query("DELETE FROM habitos WHERE id=$1", [id]);
+  const pool = await conectar();
+  await pool.request()
+    .input("ID_Habito", sql.Int, id)
+    .query("DELETE FROM Habito WHERE ID_Habito=@ID_Habito");
 }
 
-async function toggleHabitDone(habito_id, dia_id, completado) {
-  await pool.query(
-    "UPDATE habitodias SET completado=$1 WHERE habito_id=$2 AND dia_id=$3",
-    [completado, habito_id, dia_id]
-  );
-}
-
-module.exports = {
-  getHabits,
-  insertHabit,
-  updateHabit,
-  deleteHabit,
-  toggleHabitDone
-};
+module.exports = { getHabits, insertHabit, updateHabit, deleteHabit };

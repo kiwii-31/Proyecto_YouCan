@@ -6,21 +6,16 @@ export default function Calendar() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("usuario"));
-    const usuarioId = user?.id;
-
     async function fetchHabits() {
       try {
-        if (!usuarioId) {
-          setError("No se encontro usuario logueado");
-          return;
-        }
-
-        const data = await getHabits(usuarioId);
+        const data = await getHabits();
         if (Array.isArray(data)) {
           const formatted = data.map(h => ({
             ...h,
-            dias: Array.isArray(h.dias) ? h.dias : (h.dias?.split(",") || [])
+            dias: Array.isArray(h.Dia) ? h.Dia : (h.Dia?.split(",") || []),
+            nombre: h.Nombre,
+            descripcion: h.Descripcion,
+            id: h.ID_Habito
           }));
           setHabits(formatted);
         } else {
@@ -56,4 +51,3 @@ export default function Calendar() {
     </div>
   );
 }
-
