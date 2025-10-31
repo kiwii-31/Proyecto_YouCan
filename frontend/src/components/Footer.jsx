@@ -2,9 +2,8 @@ import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn } from "react-icons/f
 
 function Footer() {
   return (
-    <footer className="fixed bottom-0 left-0 w-full bg-gradient-to-r from-blue-200 to-blue-300 text-white shadow-md z-50">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col sm:flex-row justify-between items-center">
-        
+    <footer className="bg-gradient-to-r from-blue-200 to-blue-300 text-white shadow-md p-4">
+      <div className="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center">
         <p className="text-sm text-center sm:text-left mb-4 sm:mb-0">
           &copy; 2025 YouCan. Todos los derechos reservados.
         </p>
@@ -28,7 +27,6 @@ function Footer() {
             <FaLinkedinIn size={20} />
           </a>
         </div>
-
       </div>
     </footer>
   );
