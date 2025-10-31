@@ -1,52 +1,51 @@
-import { useEffect, useState } from "react";
-import { getHabits } from "../api/habitsApi";
+export default function Calendar({ habits, setHabits }) {
+  const days = ["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];
+  const today = new Date().getDay();
 
-export default function Calendar() {
-  const [habits, setHabits] = useState([]);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    async function fetchHabits() {
-      try {
-        const data = await getHabits();
-        if (Array.isArray(data)) {
-          const formatted = data.map(h => ({
-            ...h,
-            dias: Array.isArray(h.Dia) ? h.Dia : (h.Dia?.split(",") || []),
-            nombre: h.Nombre,
-            descripcion: h.Descripcion,
-            id: h.ID_Habito
-          }));
-          setHabits(formatted);
-        } else {
-          setHabits([]);
-        }
-      } catch (err) {
-        console.error(err);
-        setError("Error al cargar habitos");
-      }
-    }
-
-    fetchHabits();
-  }, []);
+  const toggleDone = (id) => {
+    setHabits(habits.map(h => h.id === id ? { ...h, done: !h.done } : h));
+  };
 
   return (
     <div className="p-8">
-      <h1 className="text-3xl font-bold mb-6">Calendario de Habitos</h1>
-      {error && <p className="text-red-500">{error}</p>}
+      <h1 className="text-3xl font-bold mb-6 text-center">Calendario de Habitos</h1>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        {days.map((day, index) => {
+          const dayHabits = habits.filter(h => h.day === day);
+          const isToday = (today === 0 && day === "domingo") || (today === index + 1 && day !== "domingo");
 
-      <div className="space-y-6 max-h-[70vh] overflow-y-auto">
-        {Array.isArray(habits) && habits.length > 0 ? (
-          habits.map(h => (
-            <div key={h.id} className="bg-gray-50 p-4 rounded-lg shadow">
-              <h2 className="font-semibold text-xl">{h.nombre}</h2>
-              <p className="text-gray-500">{h.descripcion || "Sin descripcion"}</p>
-              <p>Dias: {h.dias?.join(", ") || "No asignados"}</p>
+          return (
+            <div
+              key={day}
+              className={`p-4 rounded-md shadow-md transition-all ${
+                isToday ? "bg-blue-100 border-2 border-blue-400" : "bg-white"
+              }`}
+            >
+              <h2 className="font-semibold text-xl capitalize mb-2">{day}</h2>
+
+              {dayHabits.length === 0 ? (
+                <p className="text-gray-400 text-sm">No hay habitos</p>
+              ) : (
+                <ul className="space-y-2 max-h-60 overflow-y-auto">
+                  {dayHabits.map(h => (
+                    <li
+                      key={h.id}
+                      className="flex justify-between items-center p-2 rounded hover:bg-gray-50 transition-all"
+                    >
+                      <span className={h.done ? "line-through text-gray-400" : ""}>{h.name}</span>
+                      <input
+                        type="checkbox"
+                        checked={h.done}
+                        onChange={() => toggleDone(h.id)}
+                        className="checkbox checkbox-primary"
+                      />
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
-          ))
-        ) : (
-          <p className="text-gray-500">No hay habitos para mostrar</p>
-        )}
+          );
+        })}
       </div>
     </div>
   );
