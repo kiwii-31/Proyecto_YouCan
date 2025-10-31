@@ -1,16 +1,22 @@
 import { useState, useEffect } from "react";
 import { getHabits, createHabit as apiCreateHabit, updateHabit as apiUpdateHabit, deleteHabit as apiDeleteHabit } from "../api/habitsApi";
 
-export default function Habits({ usuarioId }) {
+export default function Habits() {
   const [habits, setHabits] = useState([]);
   const [newHabit, setNewHabit] = useState({ nombre: "", descripcion: "", dias: [] });
   const [editId, setEditId] = useState(null);
   const [error, setError] = useState("");
   const days = ["lunes","martes","miercoles","jueves","viernes","sabado","domingo"];
+  const user = JSON.parse(localStorage.getItem("usuario"));
+  const usuarioId = user?.id;
 
   useEffect(() => {
     async function fetchHabits() {
       try {
+        if (!usuarioId) {
+          setError("No se encontro usuario logueado");
+          return;
+        }
         const data = await getHabits(usuarioId);
         if (Array.isArray(data)) {
           const formatted = data.map(h => ({
@@ -59,7 +65,7 @@ export default function Habits({ usuarioId }) {
   };
 
   const handleDelete = async (id) => {
-    if (window.confirm("¿Seguro que quieres eliminarlo?")) {
+    if (window.confirm("Seguro que quieres eliminarlo?")) {
       try {
         await apiDeleteHabit(id);
         const data = await getHabits(usuarioId);
