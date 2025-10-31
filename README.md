@@ -1,10 +1,12 @@
-### Nuevo GitHub 
-profe cree este GitHub recien por que el anterior que teniamos no me dejaba hostear la app
 # GeneracionT-Proyecto
 Somos Elmer Flores Arce(Lider del proyecto) y Laura Martínez Rodas de la Escuela Técnica N°29 D.E. 7 “Reconquista de Buenos Aires”.
 En este repositorio se encontrará nuestro trabajo final
 ## Pagina Web: YouCan
 Tal como el nombre lo de dice YouCan "Tu puedes", un aplicativo para que puedas organizarte
+
+### Nuevo GitHub 
+profe cree este GitHub recien por que el anterior que teniamos no me dejaba hostear la app
+
 #### Funcionalidades Principales
 - Registro e inicio de sesión (login).
 - Permitir a los usuarios registrar sus habitos
