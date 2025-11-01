@@ -5,7 +5,7 @@ En este repositorio se encontrará nuestro trabajo final
 Tal como el nombre lo de dice YouCan "Tu puedes", un aplicativo para que puedas organizarte
 
 ### Nuevo GitHub 
-creamos este GitHub nuevo por que con el anterior teniamos problemas al hostear la app
+creamos este GitHub nuevo por que con el anterior teniamos problemas al momento de hostear la appi
 
 #### Funcionalidades Principales
 - Registro e inicio de sesión (login).
@@ -19,22 +19,22 @@ creamos este GitHub nuevo por que con el anterior teniamos problemas al hostear 
 - Framework React
 - Backend Node.js con Express (puede q me olvide de algunos)
 - Base de datos SQL Server
-- Gestión del proyecto Trello
-- Hosting A definir
+- Organizacion del proyecto Trello
+- Hosting con Render
 
 #### Primera entrega (septiembre 2025):
 - Se hizo el formulario de la primera entrega
-- Se creó la estructura inicial del sitio web con React.
-- En esta etapa, todavía no se realizó la conexión con la base de datos.
+- Se creo la estructura inicial del sitio web con React
+- En esta etapa, todavia no se empezo con el backend
 
 #### Entrega final (octubre 2025):
 La página cuenta con las siguientes características:
-- Registro e inicio de sesión funcional con validaciones.
+- Registro e inicio de sesión funcional con validaciones
 - CRUD completo de hábitos: crear, editar y eliminar.
 - Pruebas con Postman
 - Marcar hábitos cumplidos.
 - Interfaz visual intuitiva con diseño limpio.
-- conexión a base de datos SQL Server
+- conexión a base de datos SQL Server(lo cambiamos a Postgres, por render)
 
 #### Validaciones implementadas
 
